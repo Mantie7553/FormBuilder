@@ -1,13 +1,12 @@
 import {useState} from "react";
-import type {CardData} from "./Board.tsx";
-import {Card} from "./Card.tsx";
+import type {InputInfo} from "./MyInput.tsx"
+import {MyInput} from "./MyInput.tsx";
 import {DropIndicator} from "./DropIndicator.tsx";
-import {AddCard} from "./AddCard.tsx";
 
-export const Column = ({title, headingColor, column, cards, setCards}) => {
+export const MyForm = ({title, headingColor, column, inputs, setInputs}) => {
     const [active, setActive] = useState(false);
 
-    const filteredCards: CardData[] = cards.filter((c) => c.column === column);
+    const filteredInputs: InputInfo[] = inputs.filter((c) => c.column === column);
 
     const highlightIndicator = (e) => {
         const indicators = getIndicators();
@@ -49,8 +48,8 @@ export const Column = ({title, headingColor, column, cards, setCards}) => {
         })
     }
 
-    const handleDragStart = (e, card: CardData) => {
-        e.dataTransfer.setData("cardId", card.id)
+    const handleDragStart = (e, input: InputInfo) => {
+        e.dataTransfer.setData("inputId", input.id)
     }
 
     const handleDragOver = (e) => {
@@ -68,29 +67,29 @@ export const Column = ({title, headingColor, column, cards, setCards}) => {
         setActive(false);
         clearHighlights(null);
 
-        const cardId = e.dataTransfer.getData("cardId");
+        const inputId = e.dataTransfer.getData("inputId");
         const indicators = getIndicators();
         const {element} = getNearestIndicators(e, indicators);
 
         const before = element.dataset.before || "-1";
-        if (before !== cardId) {
-            let copy = [...cards];
-            let cardToMove = copy.find((c) => c.id === cardId);
-            if (!cardToMove) return;
+        if (before !== inputId) {
+            let copy = [...inputs];
+            let inputToMove = copy.find((c) => c.id === inputId);
+            if (!inputToMove) return;
 
-            cardToMove = {...cardToMove, column};
-            copy = copy.filter((c) => c.id !== cardId);
+            inputToMove = {...inputToMove, column};
+            copy = copy.filter((c) => c.id !== inputId);
 
             const moveToBack = before === "-1";
 
             if (moveToBack) {
-                copy.push(cardToMove);
+                copy.push(inputToMove);
             }
             else {
                 const insertAt = copy.findIndex((el) => el.id === before);
-                copy.splice(insertAt, 0, cardToMove);
+                copy.splice(insertAt, 0, inputToMove);
             }
-            setCards(copy);
+            setInputs(copy);
         }
     }
 
@@ -99,21 +98,31 @@ export const Column = ({title, headingColor, column, cards, setCards}) => {
             <div className="mb-3 flex items-center justify-between">
                 <h3 className={`font-medium ${headingColor}`}>{title}</h3>
                 <span className="rounded text-sm text-neutral-400">
-                    {filteredCards.length}
+                    {filteredInputs.length}
                 </span>
             </div>
-            <div
+            <form
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDragEnd}
                 className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"}`}
             >
-                {filteredCards.map((c) => {
-                    return <Card key={c.id} {...c} handleDragStart={handleDragStart}/>
+                <MyInput
+                    id='Custom'
+                    column='complete'
+                    title='Testing'
+                    placeholder={'###-###-####'}
+                    readonly={false}
+                    pattern={'/^\d{3}-\d{3}-\d{4}$/'}
+                    required={true}
+                    draggable={false}
+                />
+                {filteredInputs.map((c) => {
+                    return <MyInput key={c.id} {...c} handleDragStart={handleDragStart} draggable={true}/>
                 })}
                 <DropIndicator column={column}/>
-                <AddCard column={column} setCards={setCards} />
-            </div>
+                <button type="submit">Submit</button>
+            </form>
         </div>
     )
 }

@@ -1,57 +1,34 @@
 import {useEffect, useState} from "react";
-import {Column} from "./Column.tsx";
+import {MyForm} from "./MyForm.tsx";
+import {AddInput} from "./AddInput.tsx";
 import {Garbage} from "./Garbage.tsx";
-
-export type CardData = {
-    title: string,
-    id: string,
-    column: string
-}
 
 export const Board = () => {
 
-    const [cards, setCards] = useState([]);
+    const [inputs, setInputs] = useState([]);
     const [hasChecked, setHasChecked] = useState(false);
 
     useEffect(() => {
-        hasChecked && localStorage.setItem("cards", JSON.stringify(cards));
-    }, [cards]);
+        hasChecked && localStorage.setItem("inputs", JSON.stringify(inputs));
+    }, [inputs]);
 
     useEffect(() => {
-        const cardData = localStorage.getItem('cards');
-        setCards(cardData ? JSON.parse(cardData) : []);
+        const inputData = localStorage.getItem('inputs');
+        setInputs(inputData ? JSON.parse(inputData) : []);
         setHasChecked(true);
     }, []);
 
-    return <div className="flex h-full w-full gap-3 overflow-scroll p-12">
-        <Column
-            title="Backlog"
-            column="backlog"
-            headingColor="text-neutral-500"
-            cards={cards}
-            setCards={setCards}
-        />
-        <Column
-            title="TODO"
-            column="todo"
-            headingColor="text-yellow-200"
-            cards={cards}
-            setCards={setCards}
-        />
-        <Column
-            title="In Progress"
-            column="doing"
-            headingColor="text-blue-200"
-            cards={cards}
-            setCards={setCards}
-        />
-        <Column
-            title="Complete"
-            column="complete"
-            headingColor="text-emerald-200"
-            cards={cards}
-            setCards={setCards}
-        />
-        <Garbage setCards={setCards}/>
+    return <div className="flex h-full w-full gap-3 overflow-scroll p-12 justify-center">
+        <div>
+            <MyForm
+                title="Place Here"
+                column="form"
+                headingColor="text-emerald-200"
+                inputs={inputs}
+                setInputs={setInputs}
+            />
+            <Garbage setInputs={setInputs}/>
+            <AddInput column={'form'} setInputs={setInputs} />
+        </div>
     </div>
 }

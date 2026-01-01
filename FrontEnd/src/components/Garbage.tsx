@@ -2,7 +2,7 @@ import {useState} from "react";
 import {FaFire} from "react-icons/fa";
 import {FiTrash} from "react-icons/fi";
 
-export const Garbage = ({setCards}) => {
+export const Garbage = ({setInputs}) => {
     const [active, setActive] = useState(false);
 
     const handleDragOver = (e) => {
@@ -15,8 +15,8 @@ export const Garbage = ({setCards}) => {
     }
 
     const handleDragEnd = (e) => {
-        const cardId: string = e.dataTransfer.getData("cardId");
-        setCards((pv) => pv.filter((c) => c.id !== cardId));
+        const inputId: string = e.dataTransfer.getData("inputId");
+        setInputs((pv) => pv.filter((i) => i.id !== inputId));
         setActive(false);
     }
 

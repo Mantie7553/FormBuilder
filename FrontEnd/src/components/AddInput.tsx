@@ -1,31 +1,29 @@
 import {useState} from "react";
 import {FiPlus} from "react-icons/fi";
-import type {CardData} from "./Board.tsx";
-import {motion} from 'framer-motion';
+import type {InputInfo} from "./MyInput.tsx";
 
-export const AddCard = ({column, setCards}) => {
+export const AddInput = ({column, setInputs}) => {
     const [text, setText] = useState("");
     const[adding, setAdding] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!text.trim().length) return;
-        const newCard: CardData = {
+        const newInput: InputInfo = {
             title: text.trim(),
             id: Math.random().toString(),
             column: column,
         }
 
-        setCards((pv) => [...pv, newCard]);
+        setInputs((pv) => [...pv, newInput]);
         setAdding(false);
     }
 
     return(
         <>
             {adding ?
-                <motion.form
+                <form
                     onSubmit={handleSubmit}
-                    layout
                 >
                     <textarea
                         onChange={(e) => setText(e.target.value)}
@@ -50,16 +48,15 @@ export const AddCard = ({column, setCards}) => {
                             <FiPlus/>
                         </button>
                     </div>
-                </motion.form>
-                : <motion.button
-                    layout
+                </form>
+                : <button
                     onClick={() => setAdding(true)}
                     className='flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors
                     hover:text-neutral-50'
                 >
-                    <span>Add Card</span>
+                    <span>Add input</span>
                     <FiPlus/>
-                </motion.button>
+                </button>
             }
         </>
     )
