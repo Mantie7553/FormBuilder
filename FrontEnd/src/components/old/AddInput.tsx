@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {FiPlus} from "react-icons/fi";
-import type {InputInfo} from "./MyInput.tsx";
+import type {InputInfo} from "../inputComponents/InputArea.tsx";
 
 export const AddInput = ({column, setInputs}) => {
     const [text, setText] = useState("");

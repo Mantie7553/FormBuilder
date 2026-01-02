@@ -1,12 +1,22 @@
 import {useState} from "react";
-import type {InputInfo} from "./MyInput.tsx"
-import {MyInput} from "./MyInput.tsx";
+import type {InputInfo} from "./inputComponents/InputArea.tsx"
+import {InputArea} from "./inputComponents/InputArea.tsx";
 import {DropIndicator} from "./DropIndicator.tsx";
 
-export const MyForm = ({title, headingColor, column, inputs, setInputs}) => {
+/**
+ * The form a user will be building
+ * @param title
+ * @param column
+ * @param inputs
+ * @param setInputs
+ * @param setShowEdit
+ * @param showEdit
+ * @constructor
+ */
+export const MyForm = ({title, column, inputs, setInputs, setShowEdit, showEdit}) => {
     const [active, setActive] = useState(false);
 
-    const filteredInputs: InputInfo[] = inputs.filter((c) => c.column === column);
+    const filteredInputs: InputInfo[] = inputs.filter((i) => i.column === column);
 
     const highlightIndicator = (e) => {
         const indicators = getIndicators();
@@ -96,32 +106,29 @@ export const MyForm = ({title, headingColor, column, inputs, setInputs}) => {
     return (
             <div className="w-56 shrink-0">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className={`font-medium ${headingColor}`}>{title}</h3>
+                <h3 className={`font-medium `}>{title}</h3>
                 <span className="rounded text-sm text-neutral-400">
                     {filteredInputs.length}
                 </span>
             </div>
             <form
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver} onDragLeave={handleDragLeave}
                 onDrop={handleDragEnd}
                 className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"}`}
             >
-                <MyInput
-                    id='Custom'
-                    column='complete'
-                    title='Testing'
-                    placeholder={'###-###-####'}
-                    readonly={false}
-                    pattern={'/^\d{3}-\d{3}-\d{4}$/'}
-                    required={true}
-                    draggable={false}
-                />
                 {filteredInputs.map((c) => {
-                    return <MyInput key={c.id} {...c} handleDragStart={handleDragStart} draggable={true}/>
+                    return <InputArea
+                        key={c.id}
+                        {...c}
+                        handleDragStart={handleDragStart}
+                        draggable={true}
+                        setInputs={setInputs}
+                        setShowEdit={setShowEdit}
+                        showEdit={showEdit}
+                    />
                 })}
                 <DropIndicator column={column}/>
-                <button type="submit">Submit</button>
+                {/*<button type="submit">Submit</button>*/}
             </form>
         </div>
     )
