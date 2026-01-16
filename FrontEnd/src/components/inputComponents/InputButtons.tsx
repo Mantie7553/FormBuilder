@@ -1,23 +1,28 @@
 import {FiSettings, FiTrash} from "react-icons/fi";
-import type {InputInfo} from "./InputArea.tsx";
+import {useFormBuilder} from "../../FormBuilderContext.tsx";
 
 /**
  * Additional buttons shown for removing or editing an input
  * @param props
  * @constructor
  */
-export const InputButtons = (props: InputInfo) => {
+export const InputButtons = ( { inputId }: { inputId: string } ) => {
+
+    const {deleteInput, editingInputId, setEditingInputId } = useFormBuilder();
+
     return (
         <div className='space-x-2'>
             <button
+                className="p-2"
                 type='button'
-                onClick={() => props.setInputs!((pv) => pv.filter((i) => i.id !== props.id))}
+                onClick={ () => deleteInput(inputId) }
             >
-                {props.setInputs ? <FiTrash/> : null}
+                <FiTrash/>
             </button>
             <button
+                className="p-2"
                 type='button'
-                onClick={() => props.setShowEdit!(props.showEdit === 'visible' ? 'invisible' : 'visible')}
+                onClick={ () => setEditingInputId(editingInputId === inputId ? null : inputId) }
             >
                 <FiSettings/>
             </button>

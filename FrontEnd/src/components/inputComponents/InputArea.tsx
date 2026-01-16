@@ -2,22 +2,24 @@ import {DropIndicator} from "../DropIndicator.tsx";
 import {InputButtons} from "./InputButtons.tsx";
 import {MyInput} from "./MyInput.tsx";
 
-export type InputInfo = {
-    title: string,
+export type InputData = {
     id: string,
+    title: string,
     column: string,
-    draggable?: boolean,
-    handleDragStart?: Function,
     placeholder?: string,
     readonly?: boolean,
     pattern?: string,
     required?: boolean,
     value?: string,
     type?: string,
-    setInputs?: Function,
-    setShowEdit?: Function,
-    showEdit?: string,
+}
 
+export type InputAreaProps = {
+    input: InputData,
+    draggable?: boolean,
+    handleDragStart?: (e: any, input: InputData) => void,
+    onDelete?: (id: string) => void,
+    onEdit?: (id: string) => void,
 }
 
 /**
@@ -25,23 +27,17 @@ export type InputInfo = {
  * @param props
  * @constructor
  */
-export const InputArea = (props: InputInfo) => {
-
-    let dragInfo = {
-        title: props.title,
-        id: props.id,
-        column: props.column,
-    }
+export const InputArea = ( { input, draggable, handleDragStart }: InputAreaProps) => {
 
     return (
         <div
-            className={`rounded border border-neutral-300 my-1 ${!props.draggable? '' : 'cursor-grab active:cursor-grabbing'} `}
-            draggable={props.draggable!}
-            onDragStart={(e) => props.handleDragStart!(e, dragInfo )}
+            className={`rounded border border-(--red) my-1 ${!draggable? '' : 'cursor-grab active:cursor-grabbing'} `}
+            draggable={draggable!}
+            onDragStart={(e) => handleDragStart?.(e, input )}
         >
-            <DropIndicator beforeId={props.id} column={props.column}/>
-            <MyInput title={props.title} id={props.id} column={props.column} draggable={props.draggable} placeholder={'1'}/>
-            <InputButtons column={props.column} id={props.id} title={props.title} setInputs={props.setInputs} setShowEdit={props.setShowEdit} showEdit={props.showEdit}/>
+            <DropIndicator beforeId={input.id} column={input.column}/>
+            <MyInput input={input} draggable={draggable}/>
+            <InputButtons inputId={input.id}/>
         </div>
     )
 }

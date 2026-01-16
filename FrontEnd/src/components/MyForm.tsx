@@ -1,22 +1,21 @@
 import {useState} from "react";
-import type {InputInfo} from "./inputComponents/InputArea.tsx"
 import {InputArea} from "./inputComponents/InputArea.tsx";
+import type {InputData} from "./inputComponents/InputArea.tsx"
 import {DropIndicator} from "./DropIndicator.tsx";
+import {useFormBuilder} from "../FormBuilderContext.tsx";
 
 /**
  * The form a user will be building
  * @param title
  * @param column
  * @param inputs
- * @param setInputs
- * @param setShowEdit
- * @param showEdit
  * @constructor
  */
-export const MyForm = ({title, column, inputs, setInputs, setShowEdit, showEdit}) => {
+export const MyForm = ({ title, column }: {title: string, column: string}) => {
+    const {inputs, setInputs} = useFormBuilder();
     const [active, setActive] = useState(false);
 
-    const filteredInputs: InputInfo[] = inputs.filter((i) => i.column === column);
+    const filteredInputs = inputs.filter((i) => i.column === column);
 
     const highlightIndicator = (e) => {
         const indicators = getIndicators();
@@ -58,7 +57,7 @@ export const MyForm = ({title, column, inputs, setInputs, setShowEdit, showEdit}
         })
     }
 
-    const handleDragStart = (e, input: InputInfo) => {
+    const handleDragStart = (e, input: InputData) => {
         e.dataTransfer.setData("inputId", input.id)
     }
 
@@ -104,27 +103,26 @@ export const MyForm = ({title, column, inputs, setInputs, setShowEdit, showEdit}
     }
 
     return (
-            <div className="w-56 shrink-0">
+            <div className="min-w-30 shrink-0">
             <div className="mb-3 flex items-center justify-between">
                 <h3 className={`font-medium `}>{title}</h3>
-                <span className="rounded text-sm text-neutral-400">
+                <span className="rounded text-m text-(--red)">
                     {filteredInputs.length}
                 </span>
             </div>
             <form
-                onDragOver={handleDragOver} onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onDrop={handleDragEnd}
-                className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"}`}
+                className={`h-full w-full rounded bg-(--white)`}
             >
-                {filteredInputs.map((c) => {
+                {filteredInputs.map((input) => {
                     return <InputArea
-                        key={c.id}
-                        {...c}
+                        key={input.id}
+                        input={input}
                         handleDragStart={handleDragStart}
                         draggable={true}
                         setInputs={setInputs}
-                        setShowEdit={setShowEdit}
-                        showEdit={showEdit}
                     />
                 })}
                 <DropIndicator column={column}/>
